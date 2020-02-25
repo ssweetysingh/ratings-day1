@@ -43,16 +43,13 @@ def load_movies():
 
     for row in open("seed_data/u.item"):
         row = row.rstrip()
-        movie_id, title, released_at, imdb_url = row.split("|")[:5]
+        movie_id, title, released_at, space, imdb_url = row.split("|")[:5]
 
-        title = title[:-7]
+        released_at = datetime.datetime.strptime(released_at, "%d-%b-%Y")
 
         movie = Movie(movie_id=movie_id, title=title,
                       released_at=released_at,
                       imdb_url=imdb_url)
-
-
-
         db.session.add(movie)
 
     db.session.commit()
@@ -68,16 +65,16 @@ def load_ratings():
     # Read u.user file and insert data
     for row in open("seed_data/u.data"):
         row = row.rstrip()
-        rating_id, movie_id, user_id, score = row.split("|")
+        user_id, movie_id, score, timestamp = row.split("\t")
 
-        rating = Rating(rating_id=rating_id,
-                        movie_id=movie_id,
-                        user_id=user_id,
-                        score=score)
+        rating = Rating(user_id=user_id,
+                        movie_id=movie_id, score=score)
 
         db.session.add(rating)
 
     db.session.commit()
+
+     
 
 
 def set_val_user_id():
